@@ -31,6 +31,20 @@ func consume(input string) (int, JsonValue) {
 		} else {
 			return consumed, NewNull()
 		}
+	case 'f':
+		consumed := consumeLiteral(input, "false")
+		if consumed == -1 {
+			return -1, NewInvalid()
+		} else {
+			return consumed, NewBoolean(false)
+		}
+	case 't':
+		consumed := consumeLiteral(input, "true")
+		if consumed == -1 {
+			return -1, NewInvalid()
+		} else {
+			return consumed, NewBoolean(true)
+		}
 	case '"':
 		return consumeString(input)
 	case '{':
@@ -74,12 +88,6 @@ func consumeObject(input string) (int, JsonValue) {
 		}
 		n += consumeWhiteSpace(input[n:])
 
-		current := string(input[n])
-		if current == "}" {
-			n += 1
-			break
-		}
-
 		consumed, key = consumeString(input[n:])
 		if consumed == -1 {
 			return -1, NewInvalid()
@@ -98,13 +106,22 @@ func consumeObject(input string) (int, JsonValue) {
 		if consumed == -1 {
 			return -1, NewInvalid()
 		}
-		n += consumed
 		name := key.stringValue
 		if IsValid(values[name]) {
 			return -1, NewInvalid()
 		}
-
 		values[name] = value
+		n += consumed
+		n += consumeWhiteSpace(input[n:])
+
+		current := input[n]
+		if current == '}' {
+			n += 1
+			break
+		} else if current == ',' {
+			n += 1
+			continue
+		}
 	}
 
 	return n, NewObject(values)

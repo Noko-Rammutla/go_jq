@@ -13,6 +13,8 @@ const (
 	JNull    JsonKind = "null"
 	JInvalid JsonKind = "invalid"
 	JObject  JsonKind = "object"
+	JTrue    JsonKind = "true"
+	JFalse   JsonKind = "false"
 )
 
 func NewString(value string) JsonValue {
@@ -35,6 +37,18 @@ func NewNull() JsonValue {
 	}
 }
 
+func NewBoolean(input bool) JsonValue {
+	if input {
+		return JsonValue{
+			kind: JTrue,
+		}
+	} else {
+		return JsonValue{
+			kind: JFalse,
+		}
+	}
+}
+
 func NewInvalid() JsonValue {
 	return JsonValue{
 		kind: JInvalid,
@@ -47,6 +61,10 @@ func Equals(lhs, rhs JsonValue) bool {
 		return rhs.kind == JInvalid
 	case JNull:
 		return rhs.kind == JNull
+	case JFalse:
+		return rhs.kind == JFalse
+	case JTrue:
+		return rhs.kind == JTrue
 	case JString:
 		return rhs.kind == JString && lhs.stringValue == rhs.stringValue
 	case JObject:
