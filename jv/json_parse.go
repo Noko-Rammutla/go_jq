@@ -3,29 +3,18 @@ package jv
 import "strings"
 
 func Parse(input string) JsonValue {
-	n := 0
-	value := NewInvalid()
-	consumed := -1
+	n := consumeWhiteSpace(input)
 
-	for {
-		if n >= len(input) {
-			break
-		}
-		if isWhiteSpace(input[n]) {
-			n += 1
-			continue
-		} else if IsValid(value) {
-			return NewInvalid()
-		} else {
-			consumed, value = parse(input[n:])
-			if consumed == -1 {
-				return NewInvalid()
-			}
-			n += consumed
-			continue
-		}
+	consumed, value := parse(input[n:])
+	if consumed == -1 {
+		return NewInvalid()
 	}
+	n += consumed
 
+	n += consumeWhiteSpace(input[n:])
+	if n != len(input) {
+		return NewInvalid()
+	}
 	return value
 }
 
@@ -86,16 +75,12 @@ func parseObject(input string) (int, JsonValue) {
 		if n >= len(input) {
 			break
 		}
+		n += consumeWhiteSpace(input[n:])
 
 		current := string(input[n])
 		if current == "}" {
 			n += 1
 			break
-		}
-
-		if isWhiteSpace(current[0]) {
-			n += 1
-			continue
 		}
 
 		if !IsValid(key) {
@@ -131,4 +116,15 @@ func parseObject(input string) (int, JsonValue) {
 	}
 
 	return n, NewObject(values)
+}
+
+func consumeWhiteSpace(input string) int {
+	for n := 0; n < len(input); n++ {
+		if isWhiteSpace(input[n]) {
+			continue
+		} else {
+			return n
+		}
+	}
+	return len(input)
 }
