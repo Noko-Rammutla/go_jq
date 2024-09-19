@@ -24,6 +24,12 @@ func TestParse(t *testing.T) {
 			"true":  jv.NewBoolean(true),
 			"false": jv.NewBoolean(false),
 		})},
+		{input: "{ \"name\": \"Alice\",  \"child\": { \"name\": \"Bob\" } }", value: jv.NewObject(map[string]jv.JsonValue{
+			"name": jv.NewString("Alice"),
+			"child": jv.NewObject(map[string]jv.JsonValue{
+				"name": jv.NewString("Bob"),
+			}),
+		})},
 	}
 
 	for _, test := range tests {
