@@ -17,6 +17,9 @@ func TestParse(t *testing.T) {
 		{input: " \"Bob\"   ", value: jv.NewString("Bob")},
 		{input: "null", value: jv.NewNull()},
 		{input: "  null   ", value: jv.NewNull()},
+		{input: "{ \"name\": \"Alice\" }", value: jv.NewObject(map[string]jv.JsonValue{
+			"name": jv.NewString("Alice"),
+		})},
 	}
 
 	for _, test := range tests {
