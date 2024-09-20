@@ -30,6 +30,16 @@ func TestParse(t *testing.T) {
 				"name": jv.NewString("Bob"),
 			}),
 		})},
+		{input: "{ \"name\": \"Alice\",  \"transactions\": [ 1, -4.38, {\"name\": \"Bob\"} ] }", value: jv.NewObject(map[string]jv.JsonValue{
+			"name": jv.NewString("Alice"),
+			"transactions": jv.NewArray([]jv.JsonValue{
+				jv.NewNumber(1, "1"),
+				jv.NewNumber(-4.38, ""),
+				jv.NewObject(map[string]jv.JsonValue{
+					"name": jv.NewString("Bob"),
+				}),
+			}),
+		})},
 	}
 
 	for _, test := range tests {

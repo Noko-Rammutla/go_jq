@@ -2,7 +2,9 @@ package jv
 
 type JsonValue struct {
 	stringValue string
+	numberValue float64
 	objectValue map[string]JsonValue
+	arrayValue  []JsonValue
 	kind        JsonKind
 }
 
@@ -15,6 +17,8 @@ const (
 	JObject  JsonKind = "object"
 	JTrue    JsonKind = "true"
 	JFalse   JsonKind = "false"
+	JNumber  JsonKind = "number"
+	JArray   JsonKind = "array"
 )
 
 func NewString(value string) JsonValue {
@@ -24,10 +28,25 @@ func NewString(value string) JsonValue {
 	}
 }
 
+func NewNumber(value float64, serialised string) JsonValue {
+	return JsonValue{
+		numberValue: value,
+		stringValue: serialised,
+		kind:        JNumber,
+	}
+}
+
 func NewObject(value map[string]JsonValue) JsonValue {
 	return JsonValue{
 		objectValue: value,
 		kind:        JObject,
+	}
+}
+
+func NewArray(value []JsonValue) JsonValue {
+	return JsonValue{
+		arrayValue: value,
+		kind:       JArray,
 	}
 }
 
@@ -67,6 +86,10 @@ func Equals(lhs, rhs JsonValue) bool {
 		return rhs.kind == JTrue
 	case JString:
 		return rhs.kind == JString && lhs.stringValue == rhs.stringValue
+	case JNumber:
+		return rhs.kind == JNumber && lhs.numberValue == rhs.numberValue
+	case JArray:
+		return rhs.kind == JArray && arrayEquals(lhs, rhs)
 	case JObject:
 		return rhs.kind == JObject && objectEquals(lhs, rhs)
 	}
@@ -87,6 +110,20 @@ func objectEquals(lhs, rhs JsonValue) bool {
 
 	for k := range lhs.objectValue {
 		if !Equals(lhs.objectValue[k], rhs.objectValue[k]) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func arrayEquals(lhs, rhs JsonValue) bool {
+	if len(lhs.arrayValue) != len(rhs.arrayValue) {
+		return false
+	}
+
+	for n := range lhs.arrayValue {
+		if !Equals(lhs.arrayValue[n], rhs.arrayValue[n]) {
 			return false
 		}
 	}

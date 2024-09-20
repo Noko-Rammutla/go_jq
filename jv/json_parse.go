@@ -1,6 +1,9 @@
 package jv
 
-import "strings"
+import (
+	"strconv"
+	"strings"
+)
 
 func Parse(input string) JsonValue {
 	n := consumeWhiteSpace(input)
@@ -49,8 +52,10 @@ func consume(input string) (int, JsonValue) {
 		return consumeString(input)
 	case '{':
 		return consumeObject(input)
+	case '[':
+		return consumeArray(input)
 	default:
-		return -1, NewInvalid()
+		return consumeNumber(input)
 	}
 }
 
@@ -69,6 +74,23 @@ func consumeString(input string) (int, JsonValue) {
 	}
 
 	return endIndex + 2, NewString(input[1 : endIndex+1])
+}
+
+func consumeNumber(input string) (int, JsonValue) {
+	if len(input) == 0 {
+		return -1, NewInvalid()
+	}
+	endIndex := findNumberEnd(input)
+	if endIndex == -1 {
+		endIndex = len(input) + 1
+	}
+
+	value, err := strconv.ParseFloat(input[:endIndex], 64)
+	if err != nil {
+		return -1, NewInvalid()
+	}
+
+	return endIndex, NewNumber(value, input[:endIndex])
 }
 
 func consumeObject(input string) (int, JsonValue) {
@@ -127,6 +149,43 @@ func consumeObject(input string) (int, JsonValue) {
 	return n, NewObject(values)
 }
 
+func consumeArray(input string) (int, JsonValue) {
+	if len(input) < 2 || input[0] != '[' {
+		return -1, NewInvalid()
+	}
+
+	values := make([]JsonValue, 0)
+	var consumed int
+	var value JsonValue
+
+	n := 1
+	for {
+		if n >= len(input) {
+			break
+		}
+		n += consumeWhiteSpace(input[n:])
+
+		consumed, value = consume(input[n:])
+		if consumed == -1 {
+			return -1, NewInvalid()
+		}
+		values = append(values, value)
+		n += consumed
+		n += consumeWhiteSpace(input[n:])
+
+		current := input[n]
+		if current == ']' {
+			n += 1
+			break
+		} else if current == ',' {
+			n += 1
+			continue
+		}
+	}
+
+	return n, NewArray(values)
+}
+
 func consumeWhiteSpace(input string) int {
 	for n := 0; n < len(input); n++ {
 		if isWhiteSpace(input[n]) {
@@ -136,6 +195,18 @@ func consumeWhiteSpace(input string) int {
 		}
 	}
 	return len(input)
+}
+
+func findNumberEnd(input string) int {
+	for n := 0; n < len(input); n++ {
+		current := string(input[n])
+		if !strings.ContainsAny(current, " ,{}[]\"") {
+			continue
+		} else {
+			return n
+		}
+	}
+	return -1
 }
 
 func consumeLiteral(input, literal string) int {
