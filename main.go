@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
+	"github.com/Noko-Rammutla/go_jq/jv"
 )
 
 func main() {
-	fmt.Println("Hello World")
+	jv.PrettryPrint(jv.Parse("{\"name\": 5, \"children\": [null, false, true, {\"surname\": \"Bob\"}]}"))
 }
