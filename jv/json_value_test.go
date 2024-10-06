@@ -16,6 +16,7 @@ func TestParse(t *testing.T) {
 		{input: "\"Alice\"", value: jv.NewString("Alice")},
 		{input: " \"Bob\"   ", value: jv.NewString("Bob")},
 		{input: "null", value: jv.NewNull()},
+		{input: "5", value: jv.NewNumber(5, "5")},
 		{input: "  null   ", value: jv.NewNull()},
 		{input: "{ \"name\": \"Alice\" }", value: jv.NewObject(map[string]jv.JsonValue{
 			"name": jv.NewString("Alice"),

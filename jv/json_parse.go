@@ -60,7 +60,7 @@ func consume(input string) (int, JsonValue) {
 }
 
 func isWhiteSpace(char byte) bool {
-	return char == ' '
+	return char == ' ' || char == '\n' || char == '\t'
 }
 
 func consumeString(input string) (int, JsonValue) {
@@ -82,7 +82,7 @@ func consumeNumber(input string) (int, JsonValue) {
 	}
 	endIndex := findNumberEnd(input)
 	if endIndex == -1 {
-		endIndex = len(input) + 1
+		endIndex = len(input)
 	}
 
 	value, err := strconv.ParseFloat(input[:endIndex], 64)
