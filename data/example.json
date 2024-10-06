@@ -1,0 +1,11 @@
+{
+  "name": 5,
+  "children": [
+    null,
+    false,
+    true,
+    {
+      "surname": "Bob"
+    }
+  ]
+}

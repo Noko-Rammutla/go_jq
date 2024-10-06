@@ -1,0 +1,19 @@
+jq - commandline JSON processor
+
+Usage:	jq <jq filter> [file]
+
+jq is a tool for processing JSON inputs, applying the given filter to
+its JSON text inputs and producing the filter's results as JSON on
+standard output.
+
+Example:
+
+	$ echo '{"foo": 0}' | jq '.'
+	{
+	  "foo": 0
+	}
+
+	$ jq '.' example.json
+	{
+	  "foo": 0
+	}
