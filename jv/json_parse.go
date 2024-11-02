@@ -200,7 +200,7 @@ func consumeWhiteSpace(input string) int {
 func findNumberEnd(input string) int {
 	for n := 0; n < len(input); n++ {
 		current := string(input[n])
-		if !strings.ContainsAny(current, " ,{}[]\"") {
+		if !strings.ContainsAny(current, ",{}[]\"") && !isWhiteSpace(input[n]) {
 			continue
 		} else {
 			return n

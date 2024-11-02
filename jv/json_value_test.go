@@ -1,6 +1,7 @@
 package jv_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/Noko-Rammutla/go_jq/jv"
@@ -20,6 +21,9 @@ func TestParse(t *testing.T) {
 		{input: "  null   ", value: jv.NewNull()},
 		{input: "{ \"name\": \"Alice\" }", value: jv.NewObject(map[string]jv.JsonValue{
 			"name": jv.NewString("Alice"),
+		})},
+		{input: "{\"age\": 5\n }", value: jv.NewObject(map[string]jv.JsonValue{
+			"age": jv.NewNumber(5.0, "5"),
 		})},
 		{input: "{ \"true\": true,  \"false\": false }", value: jv.NewObject(map[string]jv.JsonValue{
 			"true":  jv.NewBoolean(true),
@@ -43,10 +47,12 @@ func TestParse(t *testing.T) {
 		})},
 	}
 
-	for _, test := range tests {
-		value := jv.Parse(test.input)
-		if !jv.Equals(test.value, value) {
-			t.Errorf("Expected %s to be parsed to %v", test.input, test.value)
-		}
+	for n, test := range tests {
+		t.Run(fmt.Sprintf("Test %d", n), func(t *testing.T) {
+			value := jv.Parse(test.input)
+			if !jv.Equals(test.value, value) {
+				t.Errorf("Expected %s to be parsed to %v", test.input, test.value)
+			}
+		})
 	}
 }

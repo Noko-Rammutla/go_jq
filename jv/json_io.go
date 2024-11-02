@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func PrettryPrint(value JsonValue) {
+func PrettyPrint(value JsonValue) {
 	fmt.Println(formatJson(value, 0))
 }
 

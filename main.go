@@ -49,7 +49,7 @@ func main() {
 		filter = "."
 	}
 	if filter == "." {
-		jv.PrettryPrint(inputValue)
+		jv.PrettyPrint(inputValue)
 	} else {
 		_, err = fmt.Fprintf(os.Stderr, "Unsupported filter '%s'\n", args[0])
 		exitOnError(err)
