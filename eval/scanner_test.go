@@ -5,8 +5,15 @@ import (
 	"testing"
 )
 
-func tokenEqual(lhs, rhs []eval.Token) bool {
-	return false
+func assertEquals(t *testing.T, expected, actual []eval.Token) {
+	if len(expected) != len(actual) {
+		t.Fatalf("Expected length %d, got %d", len(expected), len(actual))
+	}
+	for n := range expected {
+		if expected[n] != actual[n] {
+			t.Fatalf("Expected '%v', got '%v' at position %d", expected[n], actual[n], n)
+		}
+	}
 }
 
 func TestScan(t *testing.T) {
@@ -23,8 +30,8 @@ func TestScan(t *testing.T) {
 			output: []eval.Token{eval.NewToken(eval.PIPE)},
 		},
 		"array index": {
-			input:  "[0]",
-			output: []eval.Token{eval.NewToken(eval.LEFT_SQUARE), eval.NewIntegerToken(0), eval.NewToken(eval.RIGHT_SQUARE)},
+			input:  "[-17]",
+			output: []eval.Token{eval.NewToken(eval.LEFT_SQUARE), eval.NewIntegerToken(-17), eval.NewToken(eval.RIGHT_SQUARE)},
 		},
 		"object index": {
 			input:  ".name",
@@ -52,9 +59,7 @@ func TestScan(t *testing.T) {
 				t.Fatalf("Unexpected error: %s", err)
 				return
 			}
-			if !tokenEqual(output, data.output) {
-				t.Fatal("Unexpected output")
-			}
+			assertEquals(t, data.output, output)
 		})
 	}
 }
