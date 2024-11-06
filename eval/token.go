@@ -9,6 +9,7 @@ const (
 	RIGHT_SQUARE TokenType = "]"
 	INTEGER      TokenType = "integer"
 	IDENTIFIER   TokenType = "identifier"
+	INVALID      TokenType = "invalid"
 )
 
 type Token struct {

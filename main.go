@@ -3,6 +3,7 @@ package main
 import (
 	_ "embed"
 	"fmt"
+	"github.com/Noko-Rammutla/go_jq/eval"
 	"github.com/Noko-Rammutla/go_jq/jv"
 	"io"
 	"os"
@@ -43,17 +44,16 @@ func main() {
 	inputValue := jv.Parse(string(source))
 
 	var filter string
-	if len(args) == 2 {
+	if len(args) > 0 {
 		filter = args[0]
 	} else {
 		filter = "."
 	}
-	if filter == "." {
-		jv.PrettyPrint(inputValue)
-	} else {
-		_, err = fmt.Fprintf(os.Stderr, "Unsupported filter '%s'\n", args[0])
-		exitOnError(err)
-	}
+
+	outputValue, err := eval.Run(inputValue, filter)
+	exitOnError(err)
+
+	jv.PrettyPrint(outputValue)
 }
 
 func exitOnError(err error) {

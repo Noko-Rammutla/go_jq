@@ -21,6 +21,14 @@ const (
 	JArray   JsonKind = "array"
 )
 
+func (v JsonValue) GetKind() JsonKind {
+	return v.kind
+}
+
+func (v JsonValue) GetAsObject() map[string]JsonValue {
+	return v.objectValue
+}
+
 func NewString(value string) JsonValue {
 	return JsonValue{
 		stringValue: value,
